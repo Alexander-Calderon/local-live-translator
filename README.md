@@ -197,3 +197,13 @@ Código de este wrapper: MIT, con aviso de autoría en LICENSE. Las condiciones 
 - Visor con Python estándar y HTML/JavaScript, sin framework de interfaz adicional.
 
 Los componentes y modelos conservan sus propias licencias. No incluir los pesos de investigación ni otras dependencias como si fueran código propio.
+
+## Requisitos y alcance por plataforma
+
+Linux con PulseAudio/PipeWire, Python 3.12 y navegador moderno. Whistle funciona en CPU sin GPU. Whisper acelerado requiere una GPU NVIDIA compatible con CUDA y las bibliotecas indicadas en esta guía. Los pesos se descargan antes del uso sin conexión.
+
+Las tablas anteriores son consumo medido de procesos, no mínimos de RAM total. Hay que reservar además memoria para el sistema, navegador y otras aplicaciones. No se ha determinado un mínimo de RAM ni una CPU mínima mediante pruebas en equipos de baja capacidad.
+
+Windows y macOS ejecutan pruebas de lógica en CI, pero carecen de captura nativa en esta app. No se ofrecen como plataformas experimentales utilizables todavía. Una VM puede ayudar a desarrollar un backend; la aprobación requiere probar captura, permisos y reproducción en el sistema destino.
+
+Whistle reconoce voz en siete idiomas. Whisper incluye traducción hacia inglés. WhisperLive también documenta una capa adicional de traducción a otros destinos. Nuestra beta usa un traductor compacto separado para inglés a español; no ofrece todavía todos esos destinos. [WhisperLive](https://github.com/collabora/WhisperLive#running-the-client) y [Whistle](https://www.cactuscompute.com/blog/whistle).

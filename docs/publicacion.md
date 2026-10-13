@@ -40,7 +40,7 @@ Crear un repositorio público vacío, sin generar otro README ni licencia. Copia
 
 Usar Git para subir los archivos seleccionados; no arrastrar la carpeta de trabajo completa, con modelos y sesiones, a la web. Abrir Actions y comprobar el workflow correspondiente al último commit.
 
-El repositorio propio aún no se creó ni publicó. Presentarlo como beta para Linux. Aporta captura, controles, lectura estable, traducción y guardado sobre los motores existentes; no se demostró superioridad general de reconocimiento sobre otros proyectos.
+El repositorio público es https://github.com/Alexander-Calderon/local-live-translator y la beta actual es v0.1.1. La captura funciona en Linux. La comparación reproducible de streaming está en docs/comparacion-streaming.md; mide reconocimiento, demora y memoria con el mismo corpus.
 
 ## Artículo
 
