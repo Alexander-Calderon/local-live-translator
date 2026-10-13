@@ -9,6 +9,8 @@ if [[ -x .venv/bin/python || -x faster-whisper/.venv/bin/python ]]; then
   else
     "$PY" -m pip install -r requirements.txt
   fi
+  "$PY" bin/install_translation.py
+  "$PY" bin/install_translation.py --pair es_en
   "$PY" bin/install_streaming.py
   echo 'Backend preparado. Abre ./app.sh'
   exit 0
@@ -20,5 +22,6 @@ done
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python bin/install_translation.py
+.venv/bin/python bin/install_translation.py --pair es_en
 .venv/bin/python bin/install_streaming.py
 echo 'Preparado. Abre ./app.sh y desmarca Solo modelos descargados para descargar Whisper la primera vez.'

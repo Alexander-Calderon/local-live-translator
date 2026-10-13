@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add Spanish-to-English local text translation alongside English-to-Spanish.
+- Reject incompatible language pairs and report missing translation packages before capture starts.
+- Install both compact translation packages while loading only the selected direction at runtime.
+
 ## 0.1.1
 
 - Clear unconfirmed guesses at the end of capture while retaining confirmed captions.

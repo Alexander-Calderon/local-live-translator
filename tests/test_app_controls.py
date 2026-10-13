@@ -11,6 +11,11 @@ import queue
 import listen
 
 class AppTests(unittest.TestCase):
+ def test_translation_pairs_reject_same_or_unprepared_language(self):
+  config=dict(profile='base',source='system',chunk_words=18,technical=False,terms='',draft=False,save=False,offline=True,language='es',target='en')
+  self.assertEqual(validate(config)['target'],'en')
+  for language,target in [('es','es'),('fr','en'),('en','en')]:
+   with self.assertRaises(ValueError):validate(dict(config,language=language,target=target))
  def test_end_discards_only_unconfirmed_text(self):
   view=CaptionView()
   try:

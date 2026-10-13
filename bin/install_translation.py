@@ -1,4 +1,4 @@
-"""Install official EN->ES Argos data without importing Stanza or torch."""
+"""Install official EN<->ES Argos data without importing Stanza or torch."""
 import argparse,json,urllib.request,zipfile,tempfile,shutil,stat,hashlib
 from pathlib import Path
 
@@ -16,18 +16,19 @@ def safe_extract(archive,destination):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package-file',type=Path,help='paquete .argosmodel descargado previamente')
-    parser.add_argument('--target',type=Path,default=Path(__file__).resolve().parents[1]/'.runtime/translation/en_es')
-    args=parser.parse_args();target=args.target.resolve()
+    parser.add_argument('--pair',choices=['en_es','es_en'],default='en_es')
+    parser.add_argument('--target',type=Path)
+    args=parser.parse_args();source,dest=args.pair.split('_');target=(args.target or Path(__file__).resolve().parents[1]/'.runtime/translation'/args.pair).resolve()
+    url='https://argos-net.com/v1/translate-'+args.pair+'-1_0.argosmodel'
     if target.exists():
         metadata=json.loads((target/'metadata.json').read_text())
-        if metadata.get('from_code')!='en' or metadata.get('to_code')!='es':raise ValueError('El destino contiene otro paquete')
-        print('El paquete en_es ya existe; se conserva.');return
+        if (metadata.get('from_code'),metadata.get('to_code'))!=(source,dest):raise ValueError('El destino contiene otro paquete')
+        print('El paquete '+args.pair+' ya existe; se conserva.');return
     target.parent.mkdir(parents=True,exist_ok=True)
-    with tempfile.TemporaryDirectory(dir=target.parent,prefix='install-en-es-') as directory:
+    with tempfile.TemporaryDirectory(dir=target.parent,prefix='install-'+args.pair+'-') as directory:
         staging=Path(directory);archive=args.package_file
         if archive is None:
-            archive=staging/'en_es.argosmodel'
-            url='https://argos-net.com/v1/translate-en_es-1_0.argosmodel'
+            archive=staging/(args.pair+'.argosmodel')
             with urllib.request.urlopen(url,timeout=45) as response,archive.open('wb') as output:
                 shutil.copyfileobj(response,output)
         digest=hashlib.sha256(archive.read_bytes()).hexdigest()
@@ -35,12 +36,12 @@ def main():
         candidates=list((staging/'unpacked').rglob('metadata.json'))
         if len(candidates)!=1:raise ValueError('Estructura inesperada del paquete')
         package=candidates[0].parent;metadata=json.loads(candidates[0].read_text())
-        if (metadata.get('from_code'),metadata.get('to_code'))!=('en','es') or metadata.get('target_prefix'):
+        if (metadata.get('from_code'),metadata.get('to_code'))!=(source,dest) or metadata.get('target_prefix'):
             raise ValueError('Paquete no compatible con el traductor compacto')
         if not (package/'model/model.bin').is_file() or not (package/'sentencepiece.model').is_file():
             raise ValueError('Faltan los pesos o tokenizer')
-        (package/'download-manifest.json').write_text(json.dumps({'source':args.package_file.name if args.package_file else 'https://argos-net.com/v1/translate-en_es-1_0.argosmodel','sha256':digest},indent=2))
+        (package/'download-manifest.json').write_text(json.dumps({'source':args.package_file.name if args.package_file else url,'sha256':digest},indent=2))
         shutil.move(str(package),str(target))
-    print('Paquete EN→ES instalado en '+str(target))
+    print('Paquete '+args.pair+' instalado en '+str(target))
 
 if __name__=='__main__':main()
