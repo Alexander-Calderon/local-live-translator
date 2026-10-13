@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Handle audio preparation failures through the local controls.
+- Allow a new unsaved capture after opening a saved session.
+- Translate runtime labels with the selected interface language.
+- Keep caption node references valid when moved to a floating window. Native floating-window behavior still requires browser verification.
+
 ## 0.1.0
 
 Initial beta release for local captions on Linux with PulseAudio/PipeWire.

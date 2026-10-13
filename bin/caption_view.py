@@ -30,6 +30,7 @@ h1{font-size:20px;font-weight:600}button{background:#253242;color:inherit;border
 <script>
 let version=-1,frozen=false;const nodes=new Map();
 const sourceNode=document.querySelector('#source'),previewNode=document.querySelector('#preview'),translationNode=document.querySelector('#translation');
+const provisionalPanel=document.querySelector('#provisional-panel'),translationSourceNode=document.querySelector('#translation-source');
 let floatingWindow=null,pollTimer=null,pollOwner=window,polling=false;
 function cancelPoll(){if(pollTimer!==null){try{pollOwner.clearTimeout(pollTimer)}catch(_){}pollTimer=null}}
 const change=(node,text)=>{text=['mode-cost','app-message','start','stop','status','freeze','floating','view-message','configuration','runtime','translation-preview'].includes(node.id)&&typeof localizedText==='function'?localizedText(text):text;if(node.textContent!==text)node.textContent=text};
@@ -65,9 +66,9 @@ async function refresh(){
  if(state.info)change(document.querySelector('#configuration'),'Modelo: '+state.info.model+' · '+state.info.device+' / '+state.info.compute+' · '+state.info.keywords+' pistas de vocabulario');
  change(document.querySelector('#runtime'),state.runtime||'');
  document.body.classList.toggle('transcription-only',state.info?.translation_enabled===false);if(floatingWindow&&!floatingWindow.closed)floatingWindow.document.body.className=document.body.className;
- annotated(sourceNode,state.source,state.spans);change(previewNode,state.preview);document.querySelector("#provisional-panel").hidden=!state.preview;
+ annotated(sourceNode,state.source,state.spans);change(previewNode,state.preview);provisionalPanel.hidden=!state.preview;
  change(translationNode,state.translation);
- change(document.querySelector('#translation-source'),state.translation_source?state.translation_source:'La traducción confirmada permanece hasta que termine otro bloque.');
+ change(translationSourceNode,state.translation_source?state.translation_source:'La traducción confirmada permanece hasta que termine otro bloque.');
  change(document.querySelector('#translation-preview'),state.translation_preview?'Borrador, puede cambiar: '+state.translation_preview:'');
  const history=document.querySelector('#history');const nearBottom=history.scrollHeight-history.scrollTop-history.clientHeight<50;
  for(const row of state.history){let pair=nodes.get(row.id);if(!pair){const entry=document.createElement('div');entry.className='entry pair';
