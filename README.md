@@ -1,6 +1,6 @@
 # Traductor local de audio
 
-Subtítulos del audio del sistema o del micrófono, con original y traducción en paneles separados. La inferencia se ejecuta en el equipo. La captura está validada en Linux con PulseAudio/PipeWire; Windows y macOS todavía no tienen un backend de captura en esta app. Un contenedor Linux no valida el acceso nativo a sus dispositivos de audio.
+Subtítulos del audio del sistema o del micrófono, con original y traducción en paneles separados. La inferencia se ejecuta en el equipo. La captura está validada en Linux con PulseAudio/PipeWire. Windows y macOS incorporan adaptadores nativos experimentales, pendientes de aceptación con dispositivos reales. [Instalación y alcance por plataforma](docs/plataformas.md).
 
 ![Recorrido del audio a la traducción y las sesiones](docs/media/translator-flow.gif)
 
@@ -208,7 +208,7 @@ Linux con PulseAudio/PipeWire, Python 3.12 y navegador moderno. Whistle funciona
 
 Las tablas anteriores son consumo medido de procesos, no mínimos de RAM total. Hay que reservar además memoria para el sistema, navegador y otras aplicaciones. No se ha determinado un mínimo de RAM ni una CPU mínima mediante pruebas en equipos de baja capacidad.
 
-Windows y macOS ejecutan pruebas de lógica en CI, pero carecen de captura nativa en esta app. No se ofrecen como plataformas experimentales utilizables todavía. Una VM puede ayudar a desarrollar un backend; la aprobación requiere probar captura, permisos y reproducción en el sistema destino.
+Windows usa WASAPI mediante PyAudioWPatch. macOS usa CoreAudio para micrófono y AudioTee para el sistema desde macOS 14.2. Ambas rutas son experimentales: CI comprueba lógica y replay, pero la aprobación requiere dispositivos y permisos reales. [Pasos por sistema](docs/plataformas.md).
 
 Whistle reconoce voz en siete idiomas. Whisper incluye traducción hacia inglés. WhisperLive también documenta una capa adicional de traducción a otros destinos. Nuestra beta usa un traductor compacto separado para inglés a español y español a inglés; no ofrece todavía todos esos destinos. [WhisperLive](https://github.com/collabora/WhisperLive#running-the-client) y [Whistle](https://www.cactuscompute.com/blog/whistle).
 
@@ -223,3 +223,9 @@ Para preparar el paquete inverso en una instalación existente:
 El instalador fija el paquete oficial Argos es_en 1.0, compatible con SentencePiece. El paquete 1.9 usa otro tokenizer y no se mezcla con este adaptador. No se incorpora Stanza ni Torch para traducir bloques.
 
 Cuatro frases sintéticas en español produjeron traducciones legibles, conservando una negación: “No borres los archivos” → “Don't erase the files”. En CPU con dos hilos, el proceso de traducción alcanzó 172 MiB RSS y tardó 0,15–0,21 s por frase tras cargar. Excluye reconocimiento, interfaz y navegador; no es un benchmark de reconocimiento de voz española.
+
+## Probar la ruta nativa experimental
+
+Windows: con Python 3.12, ejecuta `py -3.12 install.py` y abre `app.cmd`. macOS 14.2+: ejecuta `python3.12 install.py` y abre `./app.sh`. El Mac necesita herramientas Swift para preparar el capturador pequeño; no se instala un controlador virtual. En ambas plataformas empieza con Whisper base. Los perfiles Whistle preparados y medidos siguen siendo de Linux.
+
+La interfaz continúa usando el navegador predeterminado. El servidor local controla sus propios procesos y las sesiones; no requiere una cuenta ni un servicio externo. La mezcla nativa no ofrece identificación de hablantes ni cancelación de eco.

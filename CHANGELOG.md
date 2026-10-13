@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add experimental WASAPI capture on Windows and CoreAudio/AudioTee capture on macOS 14.2+.
+- Add native Windows launcher and a portable installer, reusing existing Python environments.
+- Add CPU replay acceptance gates on Linux, Windows and macOS; macOS helper compilation is checked without recording audio.
+- Keep Whistle profiles disabled outside the currently prepared Linux runtime.
+- Reuse existing global translation packages before downloading duplicates.
+
 - Add Spanish-to-English local text translation alongside English-to-Spanish.
 - Reject incompatible language pairs and report missing translation packages before capture starts.
 - Install both compact translation packages while loading only the selected direction at runtime.

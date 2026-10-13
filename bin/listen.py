@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Captura local de audio en Linux, reconocimiento y traducción en CPU.
+Captura local de audio en Linux, Windows y macOS, reconocimiento y traducción en CPU.
 Whisper en vivo reutiliza el backend de WhisperLive con un modelo precargado.
 Whistle y el modo por frases procesan segmentos cerrados. El streaming propio
 anterior queda disponible como motor legacy experimental.
@@ -8,6 +8,10 @@ anterior queda disponible como motor legacy experimental.
 import argparse, subprocess, sys, time, os, queue, threading, re, wave, json
 from collections import deque
 import numpy as np
+import signal
+if hasattr(signal,"SIGBREAK"):
+    def _break(*_): raise KeyboardInterrupt
+    signal.signal(signal.SIGBREAK,_break)
 
 TTY = sys.stdout.isatty()      # los codigos de escape solo tienen sentido en terminal
 CAPTION_VIEW = None
@@ -56,6 +60,9 @@ def default_mic() -> str:
 
 
 def list_devices() -> None:
+    if not sys.platform.startswith('linux'):
+        from audio_capture import devices
+        print(json.dumps(devices(),ensure_ascii=False,indent=2)); return
     print("SALIDA DEL SISTEMA (monitores) — lo que suena en el PC:\n")
     subprocess.run(["pactl", "list", "short", "sources"])
     print(f"\nPor defecto se usa: {default_monitor()}")
@@ -509,7 +516,7 @@ def main() -> int:
     global VOCABULARY_PATTERN
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["stream", "phrase"], default=None)
-    ap.add_argument("--source", choices=["system", "mic"], default="system")
+    ap.add_argument("--source", choices=["system", "mic", "both"], default="system")
     ap.add_argument("--device", help="nombre exacto (ver --list)")
     ap.add_argument("--model", default=None)
     ap.add_argument('--beam-size',type=int,default=1,choices=range(1,9),help='Whisper: alternativas de decodificación (1 rápido; 3 usado en comparación)')
@@ -639,7 +646,12 @@ def main() -> int:
     if a.chunk_words:
         MAX_PENDING_WORDS = a.chunk_words
 
-    device = a.input_wav or a.device or (default_mic() if a.source == "mic" else default_monitor())
+    device = a.input_wav or a.device or ((default_mic() if a.source == "mic" else default_monitor()) if sys.platform.startswith('linux') else a.source)
+    if not a.input_wav:
+        from audio_capture import check_capture
+        try: check_capture(a.source, a.device)
+        except (RuntimeError, ValueError) as error: ap.error(str(error))
+        if sys.platform.startswith('linux') and a.source=='both': ap.error('Sistema y micrófono en Linux: usa la interfaz para preparar la mezcla temporal.')
     here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if a.asr == "whistle":
         from whistle_backend import WhistleModel
@@ -662,7 +674,7 @@ def main() -> int:
                     break
                 except Exception:
                     pass
-        dev, ctype = ("cpu", "int8") if a.cpu else ("cuda", a.compute)
+        dev, ctype = ("cpu", "int8") if a.cpu or sys.platform=="darwin" else ("cuda", a.compute)
         print(f"cargando '{a.model}' en {dev} ({ctype})...", file=sys.stderr)
         try:
             model = WhisperModel(model_reference, device=dev, compute_type=ctype,
@@ -728,6 +740,9 @@ def main() -> int:
         if a.mode == "stream": a.preview = True
         print(f"  subtítulos: {CAPTION_VIEW.url}", file=sys.stderr)
 
+    capture_stop = threading.Event()
+    capture_errors = []
+    capture_thread = None
     q: "queue.Queue" = queue.Queue()
     if a.input_wav:
         def replay():
@@ -744,7 +759,19 @@ def main() -> int:
                 ap.error("Replay requiere WAV PCM16 mono 16kHz")
         threading.Thread(target=replay, daemon=True).start()
     else:
-        threading.Thread(target=capture, args=(device, q), daemon=True).start()
+        if sys.platform.startswith('linux'):
+            capture_thread = threading.Thread(target=capture, args=(device, q), daemon=True)
+        else:
+            def portable_capture():
+                from audio_capture import portable_blocks
+                try:
+                    for block in portable_blocks(a.source,capture_stop,a.device):
+                        q.put(block)
+                except Exception as error:
+                    capture_errors.append(str(error)); print('Error de captura: '+str(error),file=sys.stderr)
+                finally: q.put(None)
+            capture_thread = threading.Thread(target=portable_capture,daemon=True)
+        capture_thread.start()
 
     try:
         if a.mode == 'stream' and a.asr == 'whisper' and a.stream_engine == 'whisperlive':
@@ -756,13 +783,15 @@ def main() -> int:
     except KeyboardInterrupt:
         print("\nfin", file=sys.stderr)
     finally:
+        capture_stop.set()
+        if capture_thread and not sys.platform.startswith("linux"): capture_thread.join(timeout=2)
         if CAPTION_VIEW:
             CAPTION_VIEW.end()
             if a.state_json:
                 with CAPTION_VIEW.lock:
                     print('STATE_JSON:'+json.dumps(CAPTION_VIEW.state,ensure_ascii=False),flush=True)
             CAPTION_VIEW.close()
-    return 0
+    return 1 if capture_errors else 0
 
 
 if __name__ == "__main__":

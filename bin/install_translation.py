@@ -1,5 +1,5 @@
 """Install official EN<->ES Argos data without importing Stanza or torch."""
-import argparse,json,urllib.request,zipfile,tempfile,shutil,stat,hashlib
+import argparse,json,os,urllib.request,zipfile,tempfile,shutil,stat,hashlib
 from pathlib import Path
 
 def safe_extract(archive,destination):
@@ -20,6 +20,11 @@ def main():
     parser.add_argument('--target',type=Path)
     args=parser.parse_args();source,dest=args.pair.split('_');target=(args.target or Path(__file__).resolve().parents[1]/'.runtime/translation'/args.pair).resolve()
     url='https://argos-net.com/v1/translate-'+args.pair+'-1_0.argosmodel'
+    global_package=Path(os.environ.get('XDG_DATA_HOME',str(Path.home()/'.local/share')))/'argos-translate/packages'/args.pair
+    if args.target is None and not target.exists() and (global_package/'metadata.json').is_file():
+        metadata=json.loads((global_package/'metadata.json').read_text())
+        if (metadata.get('from_code'),metadata.get('to_code'))==(source,dest) and (global_package/'sentencepiece.model').is_file() and (global_package/'model/model.bin').is_file():
+            print('Se reutiliza el paquete global '+args.pair+'.');return
     if target.exists():
         metadata=json.loads((target/'metadata.json').read_text())
         if (metadata.get('from_code'),metadata.get('to_code'))!=(source,dest):raise ValueError('El destino contiene otro paquete')

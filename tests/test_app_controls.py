@@ -35,6 +35,7 @@ class AppTests(unittest.TestCase):
   with patch.object(listen.subprocess,'Popen',side_effect=OSError('device unavailable')):
    with self.assertRaises(OSError):listen.capture('fake-device',q)
   self.assertIsNone(q.get_nowait())
+ @unittest.skipUnless(sys.platform.startswith('linux'),'Linux desktop launcher')
  def test_shortcut_is_scoped_and_does_not_overwrite_another_launcher(self):
   with tempfile.TemporaryDirectory() as directory,patch.dict(os.environ,{'XDG_DATA_HOME':directory}):
    target=desktop_shortcut()
