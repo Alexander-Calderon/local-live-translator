@@ -32,7 +32,7 @@ let version=-1,frozen=false;const nodes=new Map();
 const sourceNode=document.querySelector('#source'),previewNode=document.querySelector('#preview'),translationNode=document.querySelector('#translation');
 let floatingWindow=null,pollTimer=null,pollOwner=window,polling=false;
 function cancelPoll(){if(pollTimer!==null){try{pollOwner.clearTimeout(pollTimer)}catch(_){}pollTimer=null}}
-const change=(node,text)=>{text=['mode-cost','app-message','start','stop','status','freeze','floating','view-message'].includes(node.id)&&typeof localizedText==='function'?localizedText(text):text;if(node.textContent!==text)node.textContent=text};
+const change=(node,text)=>{text=['mode-cost','app-message','start','stop','status','freeze','floating','view-message','configuration','runtime','translation-preview'].includes(node.id)&&typeof localizedText==='function'?localizedText(text):text;if(node.textContent!==text)node.textContent=text};
 function annotated(node,text,spans=[]){
  const signature=JSON.stringify([text,spans]);if(node.dataset.signature===signature)return;
  node.dataset.signature=signature;node.replaceChildren();let cursor=0;const chars=Array.from(text);
