@@ -206,7 +206,20 @@ Los componentes y modelos conservan sus propias licencias. No incluir los pesos 
 
 Linux con PulseAudio/PipeWire, Python 3.12 y navegador moderno. Whistle funciona en CPU sin GPU. Whisper acelerado requiere una GPU NVIDIA compatible con CUDA y las bibliotecas indicadas en esta guía. Los pesos se descargan antes del uso sin conexión.
 
-Las tablas anteriores son consumo medido de procesos, no mínimos de RAM total. Hay que reservar además memoria para el sistema, navegador y otras aplicaciones. No se ha determinado un mínimo de RAM ni una CPU mínima mediante pruebas en equipos de baja capacidad.
+### Hardware para empezar
+
+Estas cifras son recomendaciones de planificación a partir de las medidas del proyecto. No son mínimos certificados: todavía no se ha probado una serie de equipos de baja capacidad. La RAM libre importa más que la RAM instalada si tienes otras aplicaciones abiertas.
+
+| Modo | RAM total aconsejada | RAM libre al iniciar | GPU |
+|---|---:|---:|---|
+| Whistle mínimo o ligero, Linux | 8 GB | 2 GB | No necesita GPU |
+| Whisper base en vivo | 8 GB; 16 GB con videollamada o IDE | 3 GB | CPU disponible; NVIDIA de 4 GB para empezar con aceleración |
+| Whisper small en vivo | 16 GB | 4 GB | NVIDIA de 4 GB aconsejada para baja latencia |
+| Whisper medium por segmentos | 16 GB | 6 GB | NVIDIA de 4 GB o más; evitar medium en vivo como opción inicial |
+
+Para la ruta CPU, empieza con base y una CPU moderna de cuatro núcleos o más. Esto no garantiza tiempo real: comprueba el retraso con tu audio antes de usarla en una reunión. En Mac se usa CPU, sin aceleración Metal. El equipo de referencia de las mediciones CUDA tiene un i5-12500H y una RTX 3050 de 4 GiB; los runners de CI verifican funcionamiento con archivo, no rapidez en reuniones.
+
+Las tablas de consumo anteriores miden procesos concretos, no todo el equipo. La reserva propuesta deja margen para reconocimiento, traducción y navegador, pero una videollamada, otras pestañas o un IDE pueden necesitar más. Si aparece retraso, empieza por base o Whistle, cierra aplicaciones y revisa la RAM libre. Los pesos y las dependencias requieren espacio adicional en disco y conexión durante la preparación; después puedes usar modelos descargados sin internet.
 
 Windows usa WASAPI mediante PyAudioWPatch. macOS usa CoreAudio para micrófono y AudioTee para el sistema desde macOS 14.2. Ambas rutas son experimentales: CI comprueba lógica y replay, pero la aprobación requiere dispositivos y permisos reales. [Pasos por sistema](docs/plataformas.md).
 
