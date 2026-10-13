@@ -1,6 +1,6 @@
 # Comparación de streaming
 
-Ensayo del 12 de octubre de 2026. Se alimentaron en tiempo real seis clips públicos de LibriSpeech y seis de FLEURS, con 0,5 s entre clips y silencio final. Total: 126,805 s de replay y 271 palabras de referencia. Son voces de lectura, no una reunión con voces superpuestas.
+Ensayo del 12 de octubre de 2026. Se alimentaron en tiempo real seis clips públicos de LibriSpeech y seis de FLEURS, con 0,5 s entre clips y silencio final. Total: 126,805 s de replay y 271 palabras de referencia. Son voces de lectura, no una reunión con voces superpuestas. El scoring pasa a minúsculas, compara Mr como Mister y cuenta tokens alfabéticos sin puntuación.
 
 Todos los brazos usaron los mismos pesos de Whisper small en CUDA, float16, beam=1, VAD y timestamps de palabras, sin condicionar por el texto previo. WhisperLive se fijó a la revisión f26bdd5294ace7d31020ca00e04e7b14c2b7d954. La integración usa Faster Whisper 1.2.1, un modelo precargado y detección de dispositivo con CTranslate2; WhisperLive original importa Torch y su transcriptor derivado de Faster Whisper.
 

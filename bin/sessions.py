@@ -19,17 +19,21 @@ class SessionStore:
         metadata, transcript = self.paths(identity)
         if metadata.is_symlink() or transcript.is_symlink():
             raise ValueError('Sesión inválida')
+        if metadata.stat().st_size > 65536:
+            raise ValueError('Metadatos demasiado grandes')
         data = json.loads(metadata.read_text())
+        if not isinstance(data,dict) or not isinstance(data.get('config'),dict) or any(not isinstance(data.get(k),str) for k in ('name','created','updated')):
+            raise ValueError('Metadatos inválidos')
         if data.get('id') != identity or not transcript.is_file():
             raise ValueError('Sesión incompleta')
         return data
 
     def write(self, data):
         metadata, _ = self.paths(data['id'])
-        temporary = metadata.with_suffix('.tmp')
+        temporary = metadata.with_name(metadata.name+'.'+secrets.token_hex(8)+'.tmp')
         if temporary.is_symlink() or metadata.is_symlink():
             raise ValueError('Sesión inválida')
-        fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, 'w') as output:
             json.dump(data, output, ensure_ascii=False)
         os.replace(temporary, metadata)
