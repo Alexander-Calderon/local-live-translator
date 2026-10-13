@@ -47,7 +47,7 @@ Para una instalación nueva en Linux, con Python 3.12 y pulseaudio-utils:
     ./install.sh
     ./app.sh
 
-El instalador prepara dependencias, traducción EN→ES y una revisión fijada del backend WhisperLive. El archivo de licencia se conserva con sus fuentes en .runtime/whisperlive/. No levanta un servidor externo ni carga dos modelos. En la primera ejecución de Whisper, desmarcar Solo modelos descargados para permitir bajar sus pesos. Las descargas requieren conexión; la captura e inferencia posteriores son locales. Se probó la app con las dependencias existentes; no se repitió una instalación completa en otro entorno.
+El instalador prepara dependencias, traducción EN↔ES y una revisión fijada del backend WhisperLive. El archivo de licencia se conserva con sus fuentes en .runtime/whisperlive/. No levanta un servidor externo ni carga dos modelos. En la primera ejecución de Whisper, desmarcar Solo modelos descargados para permitir bajar sus pesos. Las descargas requieren conexión; la captura e inferencia posteriores son locales. Se probó la app con las dependencias existentes; no se repitió una instalación completa en otro entorno.
 
 La interfaz controla la fuente predeterminada del sistema o micrófono. Crear acceso al menú permite abrirla después como Traductor local, sin terminal. Detener cierra la captura y mantiene la app; Cerrar app termina también el servidor local. Cerrar solo la pestaña no detiene la captura. Ctrl+C o el cierre de la terminal terminan la app y su sesión. El CLI sigue disponible para dispositivos concretos y ajustes avanzados.
 
@@ -124,7 +124,7 @@ En CLI, añadir --term-aliases vocab/tech-aliases.json al vocabulario. Para recu
 |---|---|
 | Escuchar cualquier aplicación que suene | Monitor de PulseAudio/PipeWire mediante `parec` |
 | Elegir precisión y coste | Whistle o Faster Whisper, con tamaños y cuantización configurables |
-| Traducir EN→ES localmente | Paquete Argos ejecutado con CTranslate2 en CPU |
+| Traducir EN↔ES localmente | Paquete Argos ejecutado con CTranslate2 en CPU |
 | Leer mientras se reconoce | Hipótesis provisional separada del texto confirmado |
 | Conservar la última frase | Panel superior retenido hasta que llega la siguiente; historial de 100 frases |
 | Guardar el contenido completo | `--save`, con original y traducción, independiente del límite del visor |
