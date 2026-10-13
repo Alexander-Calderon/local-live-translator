@@ -172,6 +172,13 @@ class CaptionView:
                                      f'cola ≈{queued_seconds:.1f}s{warning}')
             self.state['version'] += 1
 
+    def end(self):
+        with self.lock:
+            self.state['preview']=''
+            self.state['translation_preview']=''
+            self.state['status']='Detenido'
+            self.state['version']+=1
+
     def close(self):
         self.server.shutdown()
         self.server.server_close()

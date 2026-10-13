@@ -11,6 +11,20 @@ import queue
 import listen
 
 class AppTests(unittest.TestCase):
+ def test_end_discards_only_unconfirmed_text(self):
+  view=CaptionView()
+  try:
+   identity=view.begin('Public fixture.')
+   view.finish(identity,'Texto confirmado.')
+   view.current('', 'Unconfirmed guess')
+   view.draft('Borrador')
+   view.end()
+   self.assertEqual(view.state['source'],'Public fixture.')
+   self.assertEqual(view.state['translation'],'Texto confirmado.')
+   self.assertEqual(view.state['preview'],'')
+   self.assertEqual(view.state['translation_preview'],'')
+   self.assertEqual(len(view.state['history']),1)
+  finally:view.close()
  def test_capture_failure_ends_the_audio_queue(self):
   q=queue.Queue()
   with patch.object(listen.subprocess,'Popen',side_effect=OSError('device unavailable')):

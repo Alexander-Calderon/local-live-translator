@@ -2,6 +2,7 @@
 
 ## 0.1.1
 
+- Clear unconfirmed guesses at the end of capture while retaining confirmed captions.
 - Handle audio preparation failures through the local controls.
 - Allow a new unsaved capture after opening a saved session.
 - Translate runtime labels with the selected interface language.

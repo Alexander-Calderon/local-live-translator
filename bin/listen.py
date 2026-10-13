@@ -757,6 +757,7 @@ def main() -> int:
         print("\nfin", file=sys.stderr)
     finally:
         if CAPTION_VIEW:
+            CAPTION_VIEW.end()
             if a.state_json:
                 with CAPTION_VIEW.lock:
                     print('STATE_JSON:'+json.dumps(CAPTION_VIEW.state,ensure_ascii=False),flush=True)
