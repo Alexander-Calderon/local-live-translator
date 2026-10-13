@@ -121,7 +121,8 @@ class Manager:
   if not self.test_wav and subprocess.run(['pactl','info'],capture_output=True).returncode:raise ValueError('No se detecta PulseAudio/PipeWire')
   if config.get('target','es')!='none' and config['profile']!='ultralight':
    pair=config.get('language','en')+'_'+config.get('target','es')
-   if not (ROOT/'.runtime/translation'/pair/'metadata.json').is_file():raise ValueError('Falta traducción '+pair+'. Ejecuta python bin/install_translation.py --pair '+pair)
+   global_package=Path(os.environ.get('XDG_DATA_HOME',str(Path.home()/'.local/share')))/'argos-translate/packages'/pair
+   if not any((package/'metadata.json').is_file() for package in [ROOT/'.runtime/translation'/pair,global_package]):raise ValueError('Falta traducción '+pair+'. Ejecuta python bin/install_translation.py --pair '+pair)
   with self.lock:
    self.stop();runtime=ROOT/'.runtime/app';runtime.mkdir(parents=True,exist_ok=True,mode=0o700)
    command=[str(ROOT/'run.sh')]+PROFILES[config['profile']]+['--source',config['source'],'--chunk-words',str(config['chunk_words']),'--min-phrase-words','6','--state-json']
