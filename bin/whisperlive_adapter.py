@@ -9,7 +9,7 @@ def run(model,q,args,translate,log_path,Output,view=None):
         raise RuntimeError('Ejecuta python bin/install_streaming.py antes del modo en vivo')
     sys.path.insert(0,str(root))
     from whisper_live.backend.faster_whisper_backend import ServeClientFasterWhisper
-    out=Output(translate,log_path);seen=set();partial=''
+    out=Output(translate,log_path);seen=set();partial='';processed_until=0.0
     class Socket:
         def close(self):pass
         def send(self,payload):
@@ -26,6 +26,11 @@ def run(model,q,args,translate,log_path,Output,view=None):
             if getattr(args,'preview',False):out.preview(partial)
     class Prepared(ServeClientFasterWhisper):
         def create_model(self,device):self.transcriber=model
+        def handle_transcription_output(self,result,duration):
+            nonlocal processed_until
+            end=self.timestamp_offset+duration
+            super().handle_transcription_output(result,duration)
+            processed_until=end
         def transcribe_audio(self,audio):
             began=time.monotonic()
             segments,info=model.transcribe(audio,language=args.lang,beam_size=getattr(args,'beam_size',1),
@@ -39,13 +44,21 @@ def run(model,q,args,translate,log_path,Output,view=None):
             return segments
     backend=Prepared(Socket(),model='preloaded',language=args.lang,client_uid='local',
                      use_vad=True,word_timestamps=True,device=getattr(args,'device_kind',None))
+    received=0
     try:
         while True:
             audio=q.get()
             if audio is None:
                 backend.add_frames(np.zeros(32000,dtype=np.float32))
-                time.sleep(2)
+                # Wait for a completed pass over the tail, including upstream
+                # repeated-output confirmation. Fixed sleeps lose text on slow CPUs.
+                deadline=time.monotonic()+60
+                while processed_until < received/16000 or backend.current_out.strip():
+                    if time.monotonic()>=deadline:
+                        raise RuntimeError("El motor no confirmó el final del audio en 60 segundos")
+                    time.sleep(.05)
                 break
+            received+=len(audio)
             backend.add_frames(audio)
     finally:
         backend.cleanup();backend.trans_thread.join(timeout=10)
