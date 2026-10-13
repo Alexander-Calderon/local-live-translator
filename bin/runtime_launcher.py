@@ -36,3 +36,10 @@ def stop_process(process):
             except ProcessLookupError: break
             try: process.wait(timeout=timeout)
             except subprocess.TimeoutExpired: pass
+
+def choose_mode(args, choice):
+    modes = {'1':['--live','--model','base'], '2':['--live','--model','small'],
+             '3':['--asr','whisper','--model','medium','--mode','phrase','--segment','8','--view','web'],
+             '4':['--live','--model','medium']}
+    if choice not in modes: raise ValueError('Opción inválida')
+    return list(args)+modes[choice]

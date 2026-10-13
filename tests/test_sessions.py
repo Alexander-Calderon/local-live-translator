@@ -1,4 +1,4 @@
-import sys, tempfile, unittest
+import os, sys, tempfile, unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'bin'))
 from sessions import SessionStore
@@ -16,14 +16,14 @@ class SessionTests(unittest.TestCase):
             self.assertEqual(reopened.list()[0]['name'],'Class')
             self.assertIn('Public fixture',reopened.content(saved['id'])['transcript'])
             self.assertEqual(reopened.read(saved['id'])['config']['profile'],'small')
-            self.assertEqual(transcript.stat().st_mode & 0o777,0o600)
+            if os.name == 'posix':self.assertEqual(transcript.stat().st_mode & 0o777,0o600)
 
     def test_concurrent_renames_keep_valid_metadata(self):
         from concurrent.futures import ThreadPoolExecutor
         with tempfile.TemporaryDirectory() as directory:
-            store=SessionStore(directory);saved=store.create('Fixture',{})
+            store=SessionStore(directory);saved=store.create('Fixture',{});other=SessionStore(directory)
             with ThreadPoolExecutor(max_workers=8) as workers:
-                list(workers.map(lambda n:store.rename(saved['id'],'Fixture '+str(n)),range(32)))
+                list(workers.map(lambda n:(store if n%2 else other).rename(saved['id'],'Fixture '+str(n)),range(32)))
             self.assertTrue(store.read(saved['id'])['name'].startswith('Fixture '))
             self.assertFalse(list(Path(directory).glob('*.tmp')))
 

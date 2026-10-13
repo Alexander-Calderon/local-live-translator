@@ -15,8 +15,9 @@ def main():
     pip=[str(python),'-m','pip']
     if subprocess.run(pip+['--version'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode:
         if not shutil.which('uv'): raise SystemExit('Este entorno no tiene pip ni uv. Prepara pip antes de instalar.')
-        pip=['uv','pip','--python',str(python)]
-    subprocess.run(pip+['install','-r',str(ROOT/'requirements.txt')],check=True)
+        command=['uv','pip','install','--python',str(python),'-r',str(ROOT/'requirements.txt')]
+    else:command=pip+['install','-r',str(ROOT/'requirements.txt')]
+    subprocess.run(command,check=True)
     for file,args in [('install_translation.py',[]),('install_translation.py',['--pair','es_en']),('install_streaming.py',[])]:
         subprocess.run([str(python),str(ROOT/'bin'/file),*args],check=True)
     if sys.platform=='darwin': subprocess.run([str(python),str(ROOT/'bin/install_capture.py')],check=True)

@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / 'bin'))
 from caption_view import CaptionView
 
 class LatencyProfileTests(unittest.TestCase):
+    @unittest.skipIf(sys.platform=='win32','Unix shell menu; portable menu is tested separately')
     def test_menu_selects_stream_or_phrase_without_loading_models(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

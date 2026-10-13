@@ -8,6 +8,15 @@ import audio_capture as audio
 import runtime_launcher as launcher
 
 class PortableAudioTests(unittest.TestCase):
+    def test_portable_menu_keeps_user_flags(self):
+        for choice,model,stream in [('1','base',True),('2','small',True),('3','medium',False),('4','medium',True)]:
+            args=launcher.choose_mode(['--offline','--lang','es'],choice)
+            self.assertEqual(args[args.index('--model')+1],model)
+            self.assertEqual('--live' in args,stream)
+            self.assertIn('--offline',args)
+            self.assertEqual(args[args.index('--lang')+1],'es')
+            if not stream:self.assertEqual(args[args.index('--mode')+1],'phrase')
+
     def test_resampling_rejects_aliases_and_keeps_low_frequency(self):
         rate=48000; t=np.arange(rate,dtype=np.float32)/rate
         def convert(hz):

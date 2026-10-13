@@ -6,10 +6,8 @@ def main():
     args = sys.argv[1:]
     if args[:1] == ['--choose']:
         choice = input('Whisper: 1 base en vivo, 2 small en vivo, 3 medium por segmentos [1]: ').strip() or '1'
-        modes = {'1':['--live','--model','base'], '2':['--live','--model','small'],
-                 '3':['--asr','whisper','--model','medium','--mode','phrase','--segment','8','--view','web']}
-        if choice not in modes: raise SystemExit('Opción inválida')
-        args = args[1:]+modes[choice]
+        from runtime_launcher import choose_mode
+        args = choose_mode(args[1:],choice)
     handles = []
     if os.name == 'nt':
         for root in site.getsitepackages():
