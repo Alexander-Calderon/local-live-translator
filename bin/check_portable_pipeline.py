@@ -42,8 +42,8 @@ def main():
         if manager.process.returncode:raise RuntimeError('El worker terminó con error: '+str(manager.process.returncode))
         original=' '.join(row.get('source','') for row in rows)
         translations=' '.join(row.get('translation','') for row in rows)
-        if 'country' not in original.lower() or not translations.strip():
-            raise AssertionError('El replay no produjo original y traducción.')
+        if original.lower().count('country') < 2 or not translations.strip():
+            raise AssertionError('El replay no conservó ambas frases del original y su traducción.')
         if manager.snapshot.get('preview') or manager.snapshot.get('translation_preview'):
             raise AssertionError('Quedó una hipótesis sin confirmar después del cierre.')
         report={'platform':sys.platform,'python':sys.version.split()[0],'fixture_sha256':FIXTURE_HASH,'elapsed_seconds':round(time.monotonic()-start,3),'source':original,'translation':translations,'worker_exit':manager.process.returncode,'scope':'application/CPU/model/translation/replay; excludes native audio devices'}

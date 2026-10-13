@@ -52,6 +52,8 @@ Los registros y modelos quedan fuera de Git. En Windows, los archivos heredan la
 
 Las pruebas deterministas verifican conversión 48 kHz a 16 kHz con filtro antialias, mezcla de dos señales, cierre de recursos y errores de permisos. CI ejecuta la app con un archivo público: carga el modelo en CPU, transcribe, traduce y retiene el texto al finalizar. En macOS también compila el helper fijado sin iniciar captura ni pedir permisos.
 
+El gate exige conservar las dos frases de la muestra, su traducción y cerrar sin texto provisional pendiente. El cierre espera la confirmación del motor, con un límite de 60 segundos, en lugar de cortar después de una pausa fija.
+
 El informe de cada runner identifica sistema, Python, hash del audio y tiempo de ejecución. Los runners no sustituyen una prueba de micrófono, loopback y permisos del usuario. No se usa una VM Linux para afirmar soporte nativo de Windows o macOS.
 
 ## Fuentes
