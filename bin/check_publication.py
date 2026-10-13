@@ -1,4 +1,5 @@
 """Inspect Git candidates locally. Print reasons and paths, never matched contents."""
+import hashlib
 import argparse
 import os
 from pathlib import Path
@@ -7,6 +8,8 @@ import subprocess
 
 ROOT_FILES = {'.gitignore', 'README.md', 'LICENSE', 'LICENSE.md', 'run.sh', 'app.sh', 'install.sh',
               'requirements.txt', 'CONTRIBUTING.md', 'SECURITY.md', 'CHANGELOG.md', 'VERSION'}
+PUBLIC_MEDIA = {'docs/media/translator-flow.mp4': '6de1dc82744f999fecadef6172d2f4aa81b96ea4804443da334f0a0370af0c16', 'docs/media/translator-flow.gif': '4cab9e03628b312529ba49e9e39bde3c45f953ad27ec3594e9625fef3b66ac31', 'docs/media/poster.png': 'b7f99f22ba899c209f29408db6036e8d341904297adeef456b70b85fc86718ab'}
+
 RULES = {
     'ruta personal absoluta': re.compile(r'/(?:home|Users|mnt/data)/[^\s\"\']+'),
     'clave privada': re.compile(r'-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----'),
@@ -19,6 +22,8 @@ RULES = {
 def allowed(path):
     path = Path(path)
     name = path.as_posix()
+    if name in PUBLIC_MEDIA:
+        return True
     if name == 'docs/streaming-corpus.json':
         return True
     if name == 'bin/resumir.sh':
@@ -47,6 +52,10 @@ def findings(root, paths):
             continue
         if path.stat().st_size > 1_000_000:
             issues.append((relative, 'archivo mayor de 1 MB'))
+            continue
+        if relative in PUBLIC_MEDIA:
+            if hashlib.sha256(path.read_bytes()).hexdigest() != PUBLIC_MEDIA[relative]:
+                issues.append((relative, 'medio distinto del artefacto revisado'))
             continue
         try:
             content = path.read_text(encoding='utf-8')

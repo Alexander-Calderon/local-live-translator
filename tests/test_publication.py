@@ -9,6 +9,15 @@ sys.path.insert(0, str(ROOT / 'bin'))
 import check_publication
 
 class PublicationTests(unittest.TestCase):
+    def test_media_change_requires_review(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'docs/media').mkdir(parents=True)
+            (root / 'docs/media/poster.png').write_bytes(b'Unreviewed replacement')
+            issues = check_publication.findings(root, ['docs/media/poster.png'])
+            self.assertEqual(issues[0][1], 'medio distinto del artefacto revisado')
+            self.assertFalse(check_publication.allowed('docs/media/private-recording.mp4'))
+
     def test_no_logs_backups_or_weights(self):
         for name in ['out/meeting.txt', 'benchmarks/results.json', 'models/model.bin',
                      'bin/listen.py.bak', 'vocab/private.local.txt', '.env']:

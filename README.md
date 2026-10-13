@@ -2,9 +2,13 @@
 
 Subtítulos del audio del sistema o del micrófono, con original y traducción en paneles separados. La inferencia se ejecuta en el equipo. La captura está validada en Linux con PulseAudio/PipeWire; Windows y macOS todavía no tienen un backend de captura en esta app. Un contenedor Linux no valida el acceso nativo a sus dispositivos de audio.
 
+![Recorrido del audio a la traducción y las sesiones](docs/media/translator-flow.gif)
+
+[Ver o descargar el video del flujo](docs/media/translator-flow.mp4)
+
 ## Para qué usarlo
 
-Para seguir reuniones en inglés, clases, tutoriales o conversaciones cuando necesitas apoyar la escucha con texto original y traducción al español. El monitor del sistema captura el sonido de la aplicación de reunión; el micrófono permite reconocer tu propia voz. La app permite elegir sistema, micrófono o ambos. La mezcla temporal usa PulseAudio/PipeWire, conserva los dispositivos predeterminados y retira sus propios módulos al detenerse. Usa auriculares para evitar que el micrófono recoja otra vez el sonido de los altavoces.
+Para seguir reuniones en inglés o español, clases y tutoriales con el texto hablado y su traducción a la vista. También puede escuchar videos del navegador o películas reproducidas en el equipo, sin una extensión específica. Con los modelos descargados, la inferencia funciona sin internet. El monitor del sistema captura el sonido de la aplicación de reunión; el micrófono permite reconocer tu propia voz. La app permite elegir sistema, micrófono o ambos. La mezcla temporal usa PulseAudio/PipeWire, conserva los dispositivos predeterminados y retira sus propios módulos al detenerse. Usa auriculares para evitar que el micrófono recoja otra vez el sonido de los altavoces.
 
 Empieza con Whisper base para lectura progresiva. Usa auriculares y prueba antes de la reunión con el mismo equipo y fuente de audio. Revisa el original cuando la traducción resulte extraña. El programa puede equivocarse con nombres, voces superpuestas y frases incompletas.
 
@@ -14,7 +18,7 @@ Empieza con Whisper base para lectura progresiva. Usa auriculares y prueba antes
 |---|---|---|
 | Reconocer voz | Whisper y Whistle ya hacen ASR | Conecta el motor con audio del sistema o micrófono en Linux |
 | Elegir tamaño y fuente | Configuración del cliente o comandos propios | Controles web para iniciar, detener y cambiar de perfil |
-| Traducción local | Faster Whisper traduce hacia inglés; Whistle proporciona reconocimiento | Integra un paquete EN→ES con CTranslate2 en CPU |
+| Traducción local | Faster Whisper traduce hacia inglés; Whistle proporciona reconocimiento | Integra EN→ES y ES→EN con CTranslate2 en CPU |
 | Seguir el texto | Depende del cliente y su tratamiento de hipótesis | Separa el original provisional de lo confirmado y conserva la última traducción |
 | Revisar lo anterior | Necesita almacenamiento o interfaz adicional | Historial de 100 bloques; exportación opcional del contenido completo |
 | Nombres técnicos | Hotwords y keywords ya existen en los motores | Añade edición de vocabulario, agrupación de términos y protección durante la traducción |
@@ -22,7 +26,7 @@ Empieza con Whisper base para lectura progresiva. Usa auriculares y prueba antes
 
 La app integra estas funciones. No modifica los pesos de los modelos ni garantiza mayor precisión que otros clientes. Las mediciones corresponden a los ensayos descritos abajo.
 
-La interfaz permite elegir español o inglés para sus controles. Puedes elegir siete idiomas de reconocimiento y salida de solo transcripción. El par de traducción preparado en esta beta es inglés → español; el idioma de la interfaz no cambia ese par. Whistle reconoce siete idiomas, pero eso no instala automáticamente sus paquetes de traducción.
+La interfaz permite elegir español o inglés para sus controles. Puedes elegir siete idiomas de reconocimiento y salida de solo transcripción. La app traduce inglés → español y español → inglés; el idioma de la interfaz se elige aparte. Whistle reconoce siete idiomas, pero eso no instala automáticamente sus paquetes de traducción.
 
 ## Elegir un modo
 
