@@ -11,6 +11,25 @@ import queue
 import listen
 
 class AppTests(unittest.TestCase):
+ def test_linux_web_worker_loads_venv_cuda_libraries(self):
+  import runtime_launcher
+  with tempfile.TemporaryDirectory() as directory:
+   prefix=Path(directory)
+   library=prefix/'lib/python3.12/site-packages/nvidia/cublas/lib'
+   library.mkdir(parents=True)
+   with patch.object(runtime_launcher.sys,'platform','linux'),patch.object(runtime_launcher,'runtime_python',return_value=str(prefix/'bin/python')),patch.dict(os.environ,{'LD_LIBRARY_PATH':'/existing'}):
+    env=runtime_launcher.worker_environment()
+   self.assertIn(str(library),env['LD_LIBRARY_PATH'].split(os.pathsep))
+   self.assertIn('/existing',env['LD_LIBRARY_PATH'].split(os.pathsep))
+ def test_worker_error_survives_process_exit(self):
+  from app import Manager
+  from io import StringIO
+  manager=Manager.__new__(Manager)
+  process=type('Worker',(),{'stderr':StringIO('TRANSLATOR_ERROR: Library libcublas.so.12 not found\n'),'wait':lambda self:1})()
+  manager.lock=threading.RLock();manager.process=process;manager.mix=None;manager.snapshot={};manager.message=''
+  manager.read_worker(process)
+  self.assertIn('libcublas.so.12',manager.message)
+  self.assertEqual(manager.snapshot['status'],'Error del motor')
  def test_translation_pairs_reject_same_or_unprepared_language(self):
   config=dict(profile='base',source='system',chunk_words=18,technical=False,terms='',draft=False,save=False,offline=True,language='es',target='en')
   self.assertEqual(validate(config)['target'],'en')

@@ -45,9 +45,23 @@ def run(model,q,args,translate,log_path,Output,view=None):
     backend=Prepared(Socket(),model='preloaded',language=args.lang,client_uid='local',
                      use_vad=True,word_timestamps=True,device=getattr(args,'device_kind',None))
     received=0
+    original_transcribe=backend.transcribe_audio
+    failure=[]
+    def checked_transcribe(audio):
+        try:return original_transcribe(audio)
+        except Exception as error:
+            if not failure:
+                failure.append(error)
+                print('TRANSLATOR_ERROR: '+str(error),file=sys.stderr,flush=True)
+            backend.exit=True
+            raise
+    backend.transcribe_audio=checked_transcribe
     try:
         while True:
-            audio=q.get()
+            import queue
+            if failure:raise RuntimeError('Reconocimiento detenido: '+str(failure[0])) from failure[0]
+            try:audio=q.get(timeout=.25)
+            except queue.Empty:continue
             if audio is None:
                 backend.add_frames(np.zeros(32000,dtype=np.float32))
                 # Wait for a completed pass over the tail, including upstream

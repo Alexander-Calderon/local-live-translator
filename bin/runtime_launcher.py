@@ -15,6 +15,15 @@ def runtime_python():
 def worker_command(args):
     return [runtime_python(), str(ROOT/'bin/run.py'), *args]
 
+def worker_environment():
+    env = dict(os.environ, PYTHONIOENCODING='utf-8')
+    if sys.platform.startswith('linux'):
+        prefix = Path(runtime_python()).parent.parent
+        libraries = sorted(prefix.glob('lib/python*/site-packages/nvidia/*/lib'))
+        if libraries:
+            env['LD_LIBRARY_PATH'] = os.pathsep.join([*(str(path) for path in libraries), env.get('LD_LIBRARY_PATH', '')])
+    return env
+
 def process_options():
     return {'creationflags':getattr(subprocess,'CREATE_NEW_PROCESS_GROUP',512)} if sys.platform == 'win32' else {'start_new_session':True}
 

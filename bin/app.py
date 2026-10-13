@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from caption_view import PAGE
 from sessions import SessionStore
 from audio_mix import AudioMix
-from runtime_launcher import worker_command, process_options, stop_process
+from runtime_launcher import worker_command, worker_environment, process_options, stop_process
 from audio_capture import check_capture
 ROOT=Path(__file__).resolve().parents[1]
 PROFILES={
@@ -152,7 +152,7 @@ class Manager:
     command[command.index('--source')+1]='system'
     if not self.test_wav:
      self.mix=AudioMix();command+=['--device',self.mix.open()]
-   try:self.process=subprocess.Popen(command,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8',errors='replace',env=dict(os.environ,PYTHONIOENCODING='utf-8'),**process_options())
+   try:self.process=subprocess.Popen(command,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8',errors='replace',env=worker_environment(),**process_options())
    except OSError:
     if self.mix:self.mix.close();self.mix=None
     raise
@@ -167,14 +167,18 @@ class Manager:
    with self.lock:
     if process is self.process:self.snapshot=state;self.child_url=None
  def read_worker(self,process):
+  last_error=''
   for line in process.stderr:
    match=re.search(r'subtítulos:\s+(http://127\.0\.0\.1:\d+/[A-Za-z0-9_-]+/)',line)
    with self.lock:
     if process is not self.process:return
+    if '[ERROR]' in line or 'RuntimeError:' in line or 'TRANSLATOR_ERROR:' in line:
+     last_error=line.strip()[-500:];self.message=last_error
+     self.snapshot['status']='Error del motor'
     if match:self.child_url=match.group(1)+'state';self.message='Capturando audio. Detener cierra solo esta sesión.'
   with self.lock:
    if process is self.process:
-    self.message='Sesión finalizada.' if process.wait()==0 else 'El motor se detuvo. Revisa modelos y audio disponible o prueba otro modo.'
+    self.message='Sesión finalizada.' if process.wait()==0 else (last_error or 'El motor se detuvo. Revisa modelos y audio disponible o prueba otro modo.')
     if self.mix:self.mix.close();self.mix=None
  def state(self):
   with self.lock:url,process=self.child_url,self.process
