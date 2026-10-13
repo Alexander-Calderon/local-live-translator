@@ -1,0 +1,8 @@
+Warp Terminal
+Excalidraw
+Laravel
+GitHub Actions
+Docker Compose
+Dokploy
+tmux
+Neovim

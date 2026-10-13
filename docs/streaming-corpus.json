@@ -1,0 +1,101 @@
+{
+  "attribution": "LibriSpeech (public-domain reading) and Google FLEURS. Dataset sources and terms: https://huggingface.co/datasets/hf-internal-testing/librispeech_asr_dummy and https://huggingface.co/datasets/google/fleurs. Code license does not replace dataset terms.",
+  "clips": [
+    {
+      "id": "1272-128104-0000",
+      "wav": "1272-128104-0000.wav",
+      "reference": "MISTER QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/0/audio/audio.wav",
+      "source_sha256": "799f78ed4beb4de7ceae3a809262d4ce242394342ccd1d58cef7d49dbc2def46",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "1272-128104-0001",
+      "wav": "1272-128104-0001.wav",
+      "reference": "NOR IS MISTER QUILTER'S MANNER LESS INTERESTING THAN HIS MATTER",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/1/audio/audio.wav",
+      "source_sha256": "473b1bb573e8f7cdcd639c6e318036236190107b66bfe6892286121a92d464c1",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "1272-128104-0002",
+      "wav": "1272-128104-0002.wav",
+      "reference": "HE TELLS US THAT AT THIS FESTIVE SEASON OF THE YEAR WITH CHRISTMAS AND ROAST BEEF LOOMING BEFORE US SIMILES DRAWN FROM EATING AND ITS RESULTS OCCUR MOST READILY TO THE MIND",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/2/audio/audio.wav",
+      "source_sha256": "5f4d8f7331acffc3d2efbe0f764b9eb3447911dc17f9843e38e1083eb1685b9c",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "1272-128104-0003",
+      "wav": "1272-128104-0003.wav",
+      "reference": "HE HAS GRAVE DOUBTS WHETHER SIR FREDERICK LEIGHTON'S WORK IS REALLY GREEK AFTER ALL AND CAN DISCOVER IN IT BUT LITTLE OF ROCKY ITHACA",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/3/audio/audio.wav",
+      "source_sha256": "fc23353b884061a5c5784b0cf6b5c539680c50cfae993882822ebdd4a06ddf8c",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "1272-128104-0004",
+      "wav": "1272-128104-0004.wav",
+      "reference": "LINNELL'S PICTURES ARE A SORT OF UP GUARDS AND AT EM PAINTINGS AND MASON'S EXQUISITE IDYLLS ARE AS NATIONAL AS A JINGO POEM MISTER BIRKET FOSTER'S LANDSCAPES SMILE AT ONE MUCH IN THE SAME WAY THAT MISTER CARKER USED TO FLASH HIS TEETH AND MISTER JOHN COLLIER GIVES HIS SITTER A CHEERFUL SLAP ON THE BACK BEFORE HE SAYS LIKE A SHAMPOOER IN A TURKISH BATH NEXT MAN",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/4/audio/audio.wav",
+      "source_sha256": "4798e34d9a323ed835ae6055172236f8965dd5ccf146c25758711023ecc8b2e6",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "1272-128104-0005",
+      "wav": "1272-128104-0005.wav",
+      "reference": "IT IS OBVIOUSLY UNNECESSARY FOR US TO POINT OUT HOW LUMINOUS THESE CRITICISMS ARE HOW DELICATE IN EXPRESSION",
+      "source_url": "https://datasets-server.huggingface.co/assets/hf-internal-testing/librispeech_asr_dummy/--/5be91486e11a2d616f4ec5db8d3fd248585ac07a/--/clean/validation/5/audio/audio.wav",
+      "source_sha256": "abd89d9a5108f87f03d03875272e1f3f18bef61ea4c271a0ec5bbc3a5bfc223a",
+      "dataset": "hf-internal-testing/librispeech_asr_dummy"
+    },
+    {
+      "id": "fleurs-1548",
+      "wav": "fleurs-1548.wav",
+      "reference": "when you call someone who is thousands of miles away you are using a satellite",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/0/audio/audio.wav",
+      "source_sha256": "048169439c0328b758349af74aeb54a82a7a476e309709eb791dced06db25d48",
+      "dataset": "google/fleurs"
+    },
+    {
+      "id": "fleurs-1620",
+      "wav": "fleurs-1620.wav",
+      "reference": "now widely available throughout the archipelago javanese cuisine features an array of simply seasoned dishes the predominant flavorings the javanese favor being peanuts chillies sugar especially javanese coconut sugar and various aromatic spices",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/1/audio/audio.wav",
+      "source_sha256": "5fefdcd12d4c136762cc7841b084126fc60c6d6410f983cc9f82b6cfc45737a2",
+      "dataset": "google/fleurs"
+    },
+    {
+      "id": "fleurs-1510",
+      "wav": "fleurs-1510.wav",
+      "reference": "the u.n. also hopes to finalize a fund to help countries affected by global warming to cope with the impacts",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/2/audio/audio.wav",
+      "source_sha256": "e5664ae10a6273fbe0009068e512f4c416cccbeff19d3d2d11e5fb8d72d03fb7",
+      "dataset": "google/fleurs"
+    },
+    {
+      "id": "fleurs-1578",
+      "wav": "fleurs-1578.wav",
+      "reference": "then lakkha singh took the lead in singing the bhajans",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/3/audio/audio.wav",
+      "source_sha256": "7172cc6e8a7b006a8175c57df13bb69db0c6249dc09d7b015c98722d5af9734c",
+      "dataset": "google/fleurs"
+    },
+    {
+      "id": "fleurs-1652",
+      "wav": "fleurs-1652.wav",
+      "reference": "the major religion in moldova is orthodox christian",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/4/audio/audio.wav",
+      "source_sha256": "a7bd6d6d116c534c0d18bfe6eacd83a5616e3024f64c68b878fd6334755e245a",
+      "dataset": "google/fleurs"
+    },
+    {
+      "id": "fleurs-1531",
+      "wav": "fleurs-1531.wav",
+      "reference": "the east african islands are in the indian ocean off the eastern coast of africa",
+      "source_url": "https://datasets-server.huggingface.co/assets/google/fleurs/--/70bb2e84b976b7e960aa89f1c648e09c59f894dd/--/en_us/validation/5/audio/audio.wav",
+      "source_sha256": "0e442fc0aa37a2f0b0a1847bcab7b0cb1ac0d4e9daf600422583da65ae5e474e",
+      "dataset": "google/fleurs"
+    }
+  ]
+}
